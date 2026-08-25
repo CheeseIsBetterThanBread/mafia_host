@@ -2,8 +2,8 @@
 omit =
     */config/*
     */deprecated/*
-    */generated/*
     */tests/*
+    */tools/*
 
 [report]
 exclude_lines =
