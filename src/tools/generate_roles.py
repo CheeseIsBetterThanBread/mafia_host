@@ -1,12 +1,9 @@
-from collections import Counter
 import subprocess
+from collections import Counter
 
 import yaml
 
-from config.settings import (
-    CONFIG_DIR,
-    GENERATED_DIR,
-)
+from config.settings import CONFIG_DIR, GENERATED_DIR
 
 CONFIG_PATH = CONFIG_DIR / "roles.yaml"
 
