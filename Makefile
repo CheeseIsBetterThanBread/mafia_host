@@ -43,7 +43,10 @@ run: $(DEPS_STAMP)
 	$(VENV_PYTHON) bot.py
 
 test: | $(VENV_PYTHON)
-	$(VENV_PYTHON) -m unittest discover -s tests -v
+	$(VENV_PYTHON) -m pytest tests/ -v
+
+coverage: | $(VENV_PYTHON)
+    $(VENV_PYTHON) -m pytest tests/ --cov=. --cov-report=html
 
 docker-build:
 	docker build -t mafia-bot .
