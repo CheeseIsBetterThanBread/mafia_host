@@ -1,0 +1,19 @@
+# IDE
+**/.venv/
+**/.idea/
+**/__pycache__/
+**/.vkbottle/
+
+# coverage reports
+.coverage
+.coverage_value
+**/htmlcov/
+
+# logs
+**/logs
+
+# databases
+**/database
+
+# environment
+**/.env
