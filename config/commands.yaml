@@ -1,0 +1,11 @@
+commands:
+  - handle: help
+    info: Выводит сообщение с доступными командами
+
+  - handle: open_game
+    info: Открывает регистрацию на игру
+    tags: [is_admin, no_game]
+
+  - handle: night_action
+    info: Обработка ночных действий
+    tags: internal

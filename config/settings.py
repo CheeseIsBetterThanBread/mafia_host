@@ -10,9 +10,6 @@ CONFIG_DIR = Path(__file__).parent.resolve()
 ROOT_DIR = CONFIG_DIR.parent
 SOURCE_DIR = ROOT_DIR / "src"
 
-GENERATED_DIR = SOURCE_DIR / "generated"
-GENERATED_DIR.mkdir(exist_ok=True)
-
 CACHE_TTL_SECONDS = 3600
 
 
