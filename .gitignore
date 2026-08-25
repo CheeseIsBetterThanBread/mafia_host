@@ -17,3 +17,6 @@
 
 # environment
 **/.env
+
+# codegen
+**/generated
