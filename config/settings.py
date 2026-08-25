@@ -1,8 +1,8 @@
-from dotenv import load_dotenv
+import os
 from enum import Enum
 from pathlib import Path
 
-import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -14,6 +14,29 @@ GENERATED_DIR = SOURCE_DIR / "generated"
 GENERATED_DIR.mkdir(exist_ok=True)
 
 CACHE_TTL_SECONDS = 3600
+
+
+# --- environment ---
+class EnvironmentType(Enum):
+    PRODUCTION = "production"
+    TESTING = "testing"
+
+
+def extract_environment_type():
+    environment_variable = os.getenv("MAFIA_ENVIRONMENT", "production")
+
+    if environment_variable.lower() in ["prod", "production"]:
+        print("Running in production environment")
+        return EnvironmentType.PRODUCTION
+
+    if environment_variable.lower() in ["test", "testing"]:
+        print("Running in testing environment")
+        return EnvironmentType.TESTING
+
+    raise ValueError(f"Unknown environment: {environment_variable}")
+
+
+ENVIRONMENT = extract_environment_type()
 
 
 # --- adapters ---
