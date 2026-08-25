@@ -7,7 +7,7 @@ DEPS_STAMP := $(VENV)/.deps-installed
 
 .DEFAULT_GOAL := help
 
-.PHONY: help format check-format setup install run test docker-build docker-up docker-down
+.PHONY: help format check-format generate regenerate setup install run test docker-build docker-up docker-down
 
 help:
 	@printf "Доступные команды:\\n"
@@ -32,6 +32,13 @@ format: $(DEPS_STAMP)
 check-format: $(DEPS_STAMP)
 	$(VENV_PYTHON) -m black --check .
 
+generate: $(DEPS_STAMP)
+	$(VENV_PYTHON) -m tools
+	$(MAKE) format
+
+regenerate: $(DEPS_STAMP)
+	$(VENV_PYTHON) -m tools --force
+	$(MAKE) format
 setup: $(DEPS_STAMP)
 	@if [ ! -f "$(ENV_FILE)" ]; then cp .env.example "$(ENV_FILE)"; fi
 	@printf "Проверьте $(ENV_FILE) и заполните реальные значения перед запуском.\\n"
