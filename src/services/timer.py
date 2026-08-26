@@ -20,12 +20,11 @@ class TimerManager:
     def __init__(self):
         self._timers: Dict[str, TimerConfig] = {}
 
-    def add_timer(self, name: str, interval: float, callback: Callable, *args, **kwargs):
+    def add_timer(
+        self, name: str, interval: float, callback: Callable, *args, **kwargs
+    ):
         self._timers[name] = TimerConfig(
-            interval=interval,
-            callback=callback,
-            args=args,
-            kwargs=kwargs
+            interval=interval, callback=callback, args=args, kwargs=kwargs
         )
         return self
 

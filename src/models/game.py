@@ -71,7 +71,9 @@ class Game:
         return [player for player in self.players.values() if condition(player)]
 
     def build_daily_queue(self):
-        alive = sorted(self.filter_players(lambda p: p.is_alive), key=lambda p: p.number)
+        alive = sorted(
+            self.filter_players(lambda p: p.is_alive), key=lambda p: p.number
+        )
 
         if not alive:
             return deque()
@@ -135,7 +137,6 @@ class Game:
                 return self.current_preset
             except:
                 print("Invalid index")
-
 
     def calculate_speech_time(self):
         alive_count = len(self.filter_players(lambda p: p.is_alive))
