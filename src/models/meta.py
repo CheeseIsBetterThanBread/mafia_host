@@ -6,11 +6,11 @@ from src.models.game import Game
 from src.connection.event import Query, Response
 
 
-class Info:
+class Meta:
     def __init__(self, query: Query):
         self.query: Query = query
         self.game: Optional[Game] = None
         self.response: Optional[Response] = None
 
 
-Result = Either[Response, Info]
+Result = Either[Response, Meta]
