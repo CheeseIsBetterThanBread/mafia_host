@@ -3,18 +3,16 @@ from typing import (
     TypeVar,
     Generic,
     Callable,
-    Optional,
-    Union,
     Any,
     override,
     cast,
 )
 
+from src.models.maybe import Maybe, maybe
+
 L = TypeVar("L")
-L2 = TypeVar("L2")
 R = TypeVar("R")
 R2 = TypeVar("R2")
-T = TypeVar("T")
 
 
 class Either(ABC, Generic[L, R]):
@@ -27,11 +25,11 @@ class Either(ABC, Generic[L, R]):
         pass
 
     @abstractmethod
-    def get_left(self) -> Optional[L]:
+    def get_left(self) -> Maybe[L]:
         pass
 
     @abstractmethod
-    def get_right(self) -> Optional[R]:
+    def get_right(self) -> Maybe[R]:
         pass
 
     @abstractmethod
@@ -59,12 +57,12 @@ class Left(Either[L, R], Generic[L, R]):
         return False
 
     @override
-    def get_left(self) -> Optional[L]:
-        return self._value
+    def get_left(self) -> Maybe[L]:
+        return maybe(self._value)
 
     @override
-    def get_right(self) -> Optional[R]:
-        return None
+    def get_right(self) -> Maybe[R]:
+        return maybe()
 
     @override
     def bind(self, func: Callable[[R], "Either[L, R2]"]) -> "Either[L, R2]":
@@ -88,12 +86,12 @@ class Right(Either[L, R], Generic[L, R]):
         return True
 
     @override
-    def get_left(self) -> Optional[L]:
-        return None
+    def get_left(self) -> Maybe[L]:
+        return maybe()
 
     @override
-    def get_right(self) -> Optional[R]:
-        return self._value
+    def get_right(self) -> Maybe[R]:
+        return maybe(self._value)
 
     @override
     def bind(self, func: Callable[[R], "Either[L, R2]"]) -> "Either[L, R2]":

@@ -11,6 +11,7 @@ TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
 INTERNAL_TAG = "internal"
 
+
 class CodeGenerator:
     def __init__(self, yaml_path: str, output_dir: str, force: bool):
         self.yaml_path = yaml_path
