@@ -34,8 +34,17 @@ class Either(ABC, Generic[L, R]):
         pass
 
     @abstractmethod
-    async def bind(self, func: Callable[[R], Awaitable["Either[L, R2]"]]) -> "Either[L, R2]":
+    def bind(self, func: Callable[[R], "Either[L, R2]"]) -> "Either[L, R2]":
         pass
+
+    @abstractmethod
+    async def async_bind(
+        self, func: Callable[[R], Awaitable["Either[L, R2]"]]
+    ) -> "Either[L, R2]":
+        pass
+
+    def __rshift__(self, func: Callable[[R], "Either[L, R2]"]) -> "Either[L, R2]":
+        return self.bind(func)
 
     @abstractmethod
     def __repr__(self) -> str:
@@ -63,7 +72,13 @@ class Left(Either[L, R], Generic[L, R]):
         return maybe()
 
     @override
-    async def bind(self, func: Callable[[R], Awaitable["Either[L, R2]"]]) -> "Either[L, R2]":
+    def bind(self, func: Callable[[R], "Either[L, R2]"]) -> "Either[L, R2]":
+        return cast(Either[L, R2], self)
+
+    @override
+    async def async_bind(
+        self, func: Callable[[R], Awaitable["Either[L, R2]"]]
+    ) -> "Either[L, R2]":
         return cast(Either[L, R2], self)
 
     @override
@@ -92,8 +107,15 @@ class Right(Either[L, R], Generic[L, R]):
         return maybe(self._value)
 
     @override
-    async def bind(self, func: Callable[[R], Awaitable["Either[L, R2]"]]) -> "Either[L, R2]":
-        return Right(await func(self._value))
+    def bind(self, func: Callable[[R], "Either[L, R2]"]) -> "Either[L, R2]":
+        return func(self._value)
+
+    @override
+    async def async_bind(
+        self, func: Callable[[R], Awaitable["Either[L, R2]"]]
+    ) -> "Either[L, R2]":
+        result = await func(self._value)
+        return result
 
     @override
     def __repr__(self) -> str:
