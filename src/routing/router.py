@@ -1,12 +1,15 @@
 from auth import *
 from query import QueryType
+
+from guards.night_action import guard_night_action
+
 from handles.help import handle_help
 from handles.open_game import handle_open_game
 from handles.night_action import handle_night_action
 
 
 def process_query(query):
-    cmd = QueryType.from_string(query.get("cmd"))
+    cmd = QueryType.from_string(query.get("cmd", ""))
     if cmd is None:
         raise ValueError("Неизвестная команда")
 

@@ -16,13 +16,13 @@ class CodeGenerator:
         self.output_dir = Path(output_dir)
         self.commands = []
         self.known_tags = {
-            "internal",
-            "is_admin",
-            "no_game",
-            "game_created",
-            "in_game",
-            "is_alive",
-            "is_your_turn",
+            "internal": 0,
+            "is_admin": 1,
+            "no_game": 2,
+            "game_created": 3,
+            "in_game": 4,
+            "is_alive": 5,
+            "is_your_turn": 6,
         }
         self.existing_guards = set()
         self.existing_handlers = set()
@@ -30,17 +30,25 @@ class CodeGenerator:
         self.handles_dir = self.output_dir / "handles"
         self.handles_dir.mkdir(parents=True, exist_ok=True)
 
+        self.guards_dir = self.output_dir / "guards"
+        self.guards_dir.mkdir(parents=True, exist_ok=True)
+
         self.force = force
 
         self._check_existing_files()
 
     def _check_existing_files(self):
-        for file in Path(TARGET_DIR).glob("guard_*.py"):
-            self.existing_guards.add(file.stem.replace("guard_", ""))
+        for file in self.guards_dir.glob("*.py"):
+            self.existing_guards.add(file.stem)
 
         for file in self.handles_dir.glob("*.py"):
-            if file.stem != "__init__":
-                self.existing_handlers.add(file.stem)
+            self.existing_handlers.add(file.stem)
+
+    def _sort_tags(self, tags):
+        if not isinstance(tags, list):
+            tags = [tags]
+
+        return sorted(tags, key=lambda x: self.known_tags.get(x, 999))
 
     def load_yaml(self):
         with open(self.yaml_path, "r", encoding="utf-8") as f:
@@ -58,6 +66,10 @@ class CodeGenerator:
             if not isinstance(tags, list):
                 tags = [tags]
             for tag in tags:
+                if tag == "internal":
+                    assert tags == ["internal"]
+                    return
+
                 if tag not in self.known_tags:
                     raise ValueError(
                         f"Неизвестный тег '{tag}' для команды {cmd['handle']}"
@@ -145,8 +157,7 @@ class CodeGenerator:
                 continue
 
             handle = cmd["handle"]
-            guard_name = f"guard_{handle}"
-            guard_path = self.output_dir / f"{guard_name}.py"
+            guard_path = self.guards_dir / f"{handle}.py"
 
             if (
                 guard_path.exists() or handle in self.existing_guards
@@ -164,6 +175,21 @@ class CodeGenerator:
         content = "from auth import *\n"
         content += "from query import QueryType\n"
 
+        additional_content = "\n"
+        for cmd in self.commands:
+            handle = cmd["handle"]
+            tags = cmd.get("tags", [])
+            if not isinstance(tags, list):
+                tags = [tags]
+
+            if "internal" not in tags:
+                continue
+
+            assert handle in self.existing_guards
+            additional_content += f"from guards.{handle} import guard_{handle}\n"
+
+        content += additional_content + "\n"
+
         for cmd in self.commands:
             handle = cmd["handle"]
             assert handle in self.existing_handlers
@@ -171,7 +197,7 @@ class CodeGenerator:
 
         content += "\n\n"
         content += "def process_query(query):\n"
-        content += "    cmd = QueryType.from_string(query.get('cmd'))\n"
+        content += "    cmd = QueryType.from_string(query.get('cmd', ''))\n"
         content += "    if cmd is None:\n"
         content += "        raise ValueError('Неизвестная команда')\n\n"
 
@@ -179,9 +205,7 @@ class CodeGenerator:
         for cmd in self.commands:
             handle = cmd["handle"]
             enum_name = self._to_enum_name(handle)
-            tags = cmd.get("tags", [])
-            if not isinstance(tags, list):
-                tags = [tags]
+            tags = self._sort_tags(cmd.get("tags", []))
 
             handler_exists = handle in self.existing_handlers
 
