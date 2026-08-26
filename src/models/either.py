@@ -17,10 +17,12 @@ R2 = TypeVar("R2")
 
 
 class Either(ABC, Generic[L, R]):
+    @property
     @abstractmethod
     def is_left(self) -> bool:
         pass
 
+    @property
     @abstractmethod
     def is_right(self) -> bool:
         pass
@@ -32,6 +34,9 @@ class Either(ABC, Generic[L, R]):
     @abstractmethod
     def get_right(self) -> Maybe[R]:
         pass
+
+    def value(self) -> Maybe[R]:
+        return self.get_right()
 
     @abstractmethod
     def bind(self, func: Callable[[R], "Either[L, R2]"]) -> "Either[L, R2]":
