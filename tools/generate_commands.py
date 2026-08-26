@@ -9,6 +9,7 @@ CONFIG_PATH = CONFIG_DIR / "commands.yaml"
 TARGET_DIR = SOURCE_DIR / "routing"
 TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
+INTERNAL_TAG = "internal"
 
 class CodeGenerator:
     def __init__(self, yaml_path: str, output_dir: str, force: bool):
@@ -16,7 +17,7 @@ class CodeGenerator:
         self.output_dir = Path(output_dir)
         self.commands = []
         self.known_tags = {
-            "internal": 0,
+            INTERNAL_TAG: 0,
             "is_admin": 1,
             "no_game": 2,
             "game_created": 3,
@@ -66,8 +67,8 @@ class CodeGenerator:
             if not isinstance(tags, list):
                 tags = [tags]
             for tag in tags:
-                if tag == "internal":
-                    assert tags == ["internal"]
+                if tag == INTERNAL_TAG:
+                    assert tags == [INTERNAL_TAG]
                     return
 
                 if tag not in self.known_tags:
@@ -81,7 +82,7 @@ class CodeGenerator:
             tags = cmd.get("tags", [])
             if not isinstance(tags, list):
                 tags = [tags]
-            if "internal" in tags:
+            if INTERNAL_TAG in tags:
                 continue
 
             handle = cmd["handle"]
@@ -133,7 +134,7 @@ class CodeGenerator:
             if tags:
                 content += "# Доступ защищен тегами:\n"
                 content += f"# {', '.join(tags)}\n"
-                if "internal" in tags:
+                if INTERNAL_TAG in tags:
                     content += "# Для этой команды требуется guard\n"
 
                 content += "\n\n"
@@ -153,7 +154,7 @@ class CodeGenerator:
             if not isinstance(tags, list):
                 tags = [tags]
 
-            if "internal" not in tags:
+            if INTERNAL_TAG not in tags:
                 continue
 
             handle = cmd["handle"]
@@ -172,7 +173,8 @@ class CodeGenerator:
             self.existing_guards.add(handle)
 
     def generate_router(self):
-        content = "from auth import *\n"
+        content = "from src.models.meta import Meta"
+        content += "from auth import *\n"
         content += "from query import QueryType\n"
 
         additional_content = "\n"
@@ -182,7 +184,7 @@ class CodeGenerator:
             if not isinstance(tags, list):
                 tags = [tags]
 
-            if "internal" not in tags:
+            if INTERNAL_TAG not in tags:
                 continue
 
             assert handle in self.existing_guards
@@ -215,14 +217,14 @@ class CodeGenerator:
                 content += "            raise NotImplementedError(f'Обработчик для {handle} не реализован')\n"
                 continue
 
-            if "internal" in tags:
+            if INTERNAL_TAG in tags:
                 guard_exists = handle in self.existing_guards
                 if guard_exists:
-                    content += f"            return Wrap(query) >> guard_{handle} >> handle_{handle}\n"
+                    content += f"            return Meta(query) >> guard_{handle} >> handle_{handle}\n"
                 else:
-                    content += f"            return Wrap(query) >> handle_{handle}\n"
+                    content += f"            return Meta(query) >> handle_{handle}\n"
             else:
-                handler_chain = "Wrap(query)"
+                handler_chain = "Meta(query)"
                 for tag in tags:
                     handler_chain += f" >> {tag}_middleware"
                 handler_chain += f" >> handle_{handle}"
