@@ -37,6 +37,8 @@ class CodeGenerator:
 
         self.force = force
 
+        self.common_imports = "from src.models.meta import Meta, Result\n\n"
+
         self._check_existing_files()
 
     def _check_existing_files(self):
@@ -126,7 +128,7 @@ class CodeGenerator:
             if handle in self.existing_handlers and not self.force:
                 continue
 
-            content = ""
+            content = self.common_imports
 
             tags = cmd.get("tags", [])
             if not isinstance(tags, list):
@@ -140,7 +142,7 @@ class CodeGenerator:
 
                 content += "\n\n"
 
-            content += f"async def handle_{handle}(query):\n"
+            content += f"async def handle_{handle}(meta_info: Meta) -> Result:\n"
             content += "    # TODO: реализовать логику обработки\n"
             content += "    pass\n"
 
@@ -166,7 +168,8 @@ class CodeGenerator:
             ) and not self.force:
                 continue
 
-            content = f"async def guard_{handle}(query):\n"
+            content = self.common_imports
+            content += f"async def guard_{handle}(meta_info: Meta) -> Result:\n"
             content += "    # TODO: реализовать логику проверки доступа\n"
             content += "    pass\n"
 
@@ -174,8 +177,7 @@ class CodeGenerator:
             self.existing_guards.add(handle)
 
     def generate_router(self):
-        content = "from src.models.meta import Meta"
-        content += "from auth import *\n"
+        content = "from auth import *\n"
         content += "from query import QueryType\n"
 
         additional_content = "\n"
@@ -221,11 +223,11 @@ class CodeGenerator:
             if INTERNAL_TAG in tags:
                 guard_exists = handle in self.existing_guards
                 if guard_exists:
-                    content += f"            return Meta(query) >> guard_{handle} >> handle_{handle}\n"
+                    content += f"            return Wrap(query) >> guard_{handle} >> handle_{handle}\n"
                 else:
-                    content += f"            return Meta(query) >> handle_{handle}\n"
+                    content += f"            return Wrap(query) >> handle_{handle}\n"
             else:
-                handler_chain = "Meta(query)"
+                handler_chain = "Wrap(query)"
                 for tag in tags:
                     handler_chain += f" >> {tag}_middleware"
                 handler_chain += f" >> handle_{handle}"
