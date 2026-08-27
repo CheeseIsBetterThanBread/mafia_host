@@ -10,9 +10,6 @@ from handles.night_action import handle_night_action
 
 def process_query(query):
     cmd = QueryType.from_string(query.get("cmd", ""))
-    if cmd is None:
-        raise ValueError("Неизвестная команда")
-
     match cmd:
         case QueryType.HELP:
             return Wrap(query) >> handle_help

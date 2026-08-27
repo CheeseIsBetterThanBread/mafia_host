@@ -1,6 +1,7 @@
 commands:
   - handle: help
     info: Выводит сообщение с доступными командами
+    alias: info
 
   - handle: open_game
     info: Открывает регистрацию на игру
