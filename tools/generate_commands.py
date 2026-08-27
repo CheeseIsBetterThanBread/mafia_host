@@ -287,7 +287,7 @@ class CodeGenerator:
             guard_path.write_text(content, encoding="utf-8")
             self.existing_guards.add(handle)
 
-    def generate_entry(self):
+    def generate_router(self):
         content = "from auth import *\n"
         content += "from query import QueryType\n"
 
@@ -335,7 +335,7 @@ class CodeGenerator:
         content += "        case _:\n"
         content += "            raise ValueError('Неизвестная команда')\n"
 
-        router_path = self.output_dir / "entry.py"
+        router_path = self.output_dir / "router.py"
         router_path.write_text(content, encoding="utf-8")
 
     def _to_enum_name(self, handle: str) -> str:
@@ -348,7 +348,7 @@ class CodeGenerator:
         self.generate_query()
         self.generate_handlers()
         self.generate_guards()
-        self.generate_entry()
+        self.generate_router()
 
 
 def generate(force: bool):
