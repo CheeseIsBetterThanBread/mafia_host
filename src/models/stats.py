@@ -28,7 +28,7 @@ class WinRate:
 
     @property
     def win_rate(self) -> float:
-        return self.wins / self.total_games if self.total_games > 0 else 0.5
+        return self.wins / self.total_games if self.total_games > 0 else 0.0
 
     @property
     def win_rate_percent(self) -> float:
