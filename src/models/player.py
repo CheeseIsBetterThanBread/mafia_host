@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class Player:
     def __init__(self, user_id: int, name: str, number: int):
         self.user_id = user_id
