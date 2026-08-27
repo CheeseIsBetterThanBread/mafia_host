@@ -36,7 +36,11 @@ class Distributor:
 
         if game.simulation:
             cls._assign_roles_simulation(game)
+            LOGGER.verbose_debug("Running in simulation mode")
             return
+
+        roles_str = ", ".join(game.current_preset)
+        LOGGER.verbose_debug(f"Game is running with roles {roles_str}")
 
         if not balance_allowed:
             assert plain_allowed
