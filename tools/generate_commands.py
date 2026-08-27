@@ -206,9 +206,28 @@ class CodeGenerator:
             content += f'    "{handle}": "{info}",\n'
         content += "}\n\n"
 
+        content += "ADMIN_COMMANDS = {\n"
+        for cmd in self.commands:
+            tags = cmd.get("tags", [])
+            if not isinstance(tags, list):
+                tags = [tags]
+            if INTERNAL_TAG in tags or "admin" not in tags:
+                continue
+
+            handle = cmd["handle"]
+            info = cmd["info"]
+            content += f'    "{handle}": "{info}",\n'
+        content += "}\n\n"
+
         content += "def get_help():\n"
         content += "    result = ['Доступные команды']\n"
         content += "    for cmd, info in COMMANDS.items():\n"
+        content += '        result.append(f"  {cmd:15} - {info}")\n'
+        content += "    return '\\n'.join(result)\n"
+
+        content += "def get_admin_help():\n"
+        content += "    result = ['Команды администратора']\n"
+        content += "    for cmd, info in ADMIN_COMMANDS.items():\n"
         content += '        result.append(f"  {cmd:15} - {info}")\n'
         content += "    return '\\n'.join(result)\n"
 

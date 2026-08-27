@@ -3,6 +3,7 @@ from enum import Enum
 
 class QueryType(str, Enum):
     HELP = "help"
+    ADMIN_HELP = "admin_help"
     STATUS = "status"
     DESCRIPTION = "description"
     ROLES = "roles"

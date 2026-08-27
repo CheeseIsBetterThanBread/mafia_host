@@ -3,6 +3,11 @@ commands:
     info: Показать сообщение с доступными командами
     alias: info
 
+  - handle: admin_help
+    info: Показать сообщение с командами администратора
+    tags: admin
+    alias: info
+
   - handle: status
     info: Показать статус игроков за столом
     tags: active_game
@@ -19,7 +24,7 @@ commands:
     alias: info
 
   - handle: speech
-    info: Начать свою речь (только в свою очередь)
+    info: Начать свою речь
     tags: [active_game, in_game, alive, turn_ready]
     alias: speech_related
 

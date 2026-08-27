@@ -9,6 +9,7 @@ from guards.mafia_chat import guard_mafia_chat
 from guards.night_action import guard_night_action
 
 from handles.help import handle_help
+from handles.admin_help import handle_admin_help
 from handles.status import handle_status
 from handles.description import handle_description
 from handles.roles import handle_roles
@@ -35,6 +36,8 @@ def process_query(query):
     match cmd:
         case QueryType.HELP:
             return Wrap(query) >> handle_help
+        case QueryType.ADMIN_HELP:
+            return Wrap(query) >> admin_middleware >> handle_admin_help
         case QueryType.STATUS:
             return Wrap(query) >> active_game_middleware >> handle_status
         case QueryType.DESCRIPTION:
