@@ -108,9 +108,9 @@ class JoinGameQuery(QueryWithPayload):
         )
 
 
-RunQuery = Query
+RunGameQuery = Query
 
-TerminateQuery = Query
+TerminateGameQuery = Query
 
 InfoQuery = Query
 

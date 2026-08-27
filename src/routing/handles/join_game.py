@@ -1,9 +1,10 @@
 from src.models.meta import Meta, Result
 
 # Доступ защищен тегами:
-# admin, no_game
+# internal
+# Для этой команды требуется guard
 
 
-async def handle_open_game(meta_info: Meta) -> Result:
+async def handle_join_game(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass

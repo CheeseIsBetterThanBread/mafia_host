@@ -36,6 +36,21 @@ def extract_environment_type():
 ENVIRONMENT = extract_environment_type()
 
 
+# --- codegen ---
+INTERNAL_TAG = "internal"
+KNOWN_TAGS = {
+    INTERNAL_TAG: 0,
+    "admin": 1,
+    "in_game": 2,
+    "no_game": 2,
+    "ready_to_start": 2,
+    "right_phase": 3,
+    "alive": 4,
+    "turn_ready": 5,
+    "valid_target": 6,
+}
+
+
 # --- adapters ---
 class AdapterType(Enum):
     TELEGRAM = "telegram"

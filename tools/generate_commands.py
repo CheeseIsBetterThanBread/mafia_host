@@ -4,13 +4,11 @@ from pathlib import Path
 
 import yaml
 
-from config.settings import CONFIG_DIR, SOURCE_DIR
+from config.settings import CONFIG_DIR, SOURCE_DIR, INTERNAL_TAG, KNOWN_TAGS
 
 CONFIG_PATH = CONFIG_DIR / "commands.yaml"
 TARGET_DIR = SOURCE_DIR / "routing"
 TARGET_DIR.mkdir(parents=True, exist_ok=True)
-
-INTERNAL_TAG = "internal"
 
 
 class CodeGenerator:
@@ -18,15 +16,7 @@ class CodeGenerator:
         self.yaml_path = yaml_path
         self.output_dir = Path(output_dir)
         self.commands = []
-        self.known_tags = {
-            INTERNAL_TAG: 0,
-            "is_admin": 1,
-            "no_game": 2,
-            "game_created": 3,
-            "in_game": 4,
-            "is_alive": 5,
-            "is_your_turn": 6,
-        }
+        self.known_tags = KNOWN_TAGS
         self.existing_guards = set()
         self.existing_handlers = set()
 
@@ -208,7 +198,7 @@ class CodeGenerator:
             tags = cmd.get("tags", [])
             if not isinstance(tags, list):
                 tags = [tags]
-            if INTERNAL_TAG in tags:
+            if INTERNAL_TAG in tags or "admin" in tags:
                 continue
 
             handle = cmd["handle"]
@@ -297,7 +287,7 @@ class CodeGenerator:
             guard_path.write_text(content, encoding="utf-8")
             self.existing_guards.add(handle)
 
-    def generate_router(self):
+    def generate_entry(self):
         content = "from auth import *\n"
         content += "from query import QueryType\n"
 
@@ -345,7 +335,7 @@ class CodeGenerator:
         content += "        case _:\n"
         content += "            raise ValueError('Неизвестная команда')\n"
 
-        router_path = self.output_dir / "router.py"
+        router_path = self.output_dir / "entry.py"
         router_path.write_text(content, encoding="utf-8")
 
     def _to_enum_name(self, handle: str) -> str:
@@ -358,7 +348,7 @@ class CodeGenerator:
         self.generate_query()
         self.generate_handlers()
         self.generate_guards()
-        self.generate_router()
+        self.generate_entry()
 
 
 def generate(force: bool):

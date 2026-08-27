@@ -1,9 +1,9 @@
 from src.models.meta import Meta, Result
 
 # Доступ защищен тегами:
-# admin, no_game
+# admin, in_game
 
 
-async def handle_open_game(meta_info: Meta) -> Result:
+async def handle_terminate_game(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass
