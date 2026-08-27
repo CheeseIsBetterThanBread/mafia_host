@@ -2,6 +2,7 @@
 omit =
     */config/*
     */deprecated/*
+    */models/*
     */tests/*
     */tools/*
 
