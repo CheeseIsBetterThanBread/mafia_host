@@ -5,27 +5,27 @@ commands:
 
   - handle: status
     info: Показать статус игроков за столом
-    tags: in_game
+    tags: active_game
     alias: info
 
   - handle: description
     info: Вывести информацию о ролях в текущей игре
-    tags: in_game
+    tags: active_game
     alias: info
 
   - handle: roles
     info: Вывести набор ролей на текущую игру
-    tags: in_game
+    tags: active_game
     alias: info
 
   - handle: speech
     info: Начать свою речь (только в свою очередь)
-    tags: [in_game, alive, turn_ready]
+    tags: [active_game, in_game, alive, turn_ready]
     alias: speech_related
 
   - handle: end_speech
     info: Досрочно завершить свою речь
-    tags: [in_game, alive, turn_ready]
+    tags: [active_game, in_game, alive, turn_ready]
     alias: speech_related
 
   - handle: join_game
@@ -34,7 +34,7 @@ commands:
 
   - handle: nominate
     info: Выставить игрока на голосование, возвращает клавиатуру для выбора; возможна отмена
-    tags: [in_game, alive, turn_ready, valid_target]
+    tags: [active_game, in_game, alive, turn_ready, valid_target]
 
   - handle: commit_nominate
     info: Зафиксировать выбор игрока
@@ -42,7 +42,7 @@ commands:
 
   - handle: vote
     info: Проголосовать за игрока на голосовании, возвращает клавиатуру для выбора
-    tags: [in_game, alive, turn_ready, valid_target]
+    tags: [active_game, in_game, alive, turn_ready, valid_target]
 
   - handle: commit_vote
     info: Зафиксировать голос
@@ -50,7 +50,7 @@ commands:
 
   - handle: balance
     info: Проголосовать за вариант разрешения баланса, возвращает клавиатуру для выбора
-    tags: [in_game, alive, turn_ready, valid_target]
+    tags: [active_game, in_game, alive, turn_ready, valid_target]
 
   - handle: commit_balance
     info: Зафиксировать выбор на балансе
@@ -66,15 +66,15 @@ commands:
 
   - handle: terminate_game
     info: Завершить игру
-    tags: [admin, in_game]
+    tags: [admin, active_game, in_game]
 
   - handle: start_night
     info: Начать ночную фазу
-    tags: [admin, in_game, right_phase]
+    tags: [admin, active_game, in_game, right_phase]
 
   - handle: skip_night
     info: Завершить ночную фазу (возможно будут сделаны случайные выстрелы)
-    tags: [admin, in_game, right_phase]
+    tags: [admin, active_game, in_game, right_phase]
 
   - handle: mafia_chat
     info: Ночной чат мафии

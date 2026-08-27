@@ -36,14 +36,15 @@ def process_query(query):
         case QueryType.HELP:
             return Wrap(query) >> handle_help
         case QueryType.STATUS:
-            return Wrap(query) >> in_game_middleware >> handle_status
+            return Wrap(query) >> active_game_middleware >> handle_status
         case QueryType.DESCRIPTION:
-            return Wrap(query) >> in_game_middleware >> handle_description
+            return Wrap(query) >> active_game_middleware >> handle_description
         case QueryType.ROLES:
-            return Wrap(query) >> in_game_middleware >> handle_roles
+            return Wrap(query) >> active_game_middleware >> handle_roles
         case QueryType.SPEECH:
             return (
                 Wrap(query)
+                >> active_game_middleware
                 >> in_game_middleware
                 >> alive_middleware
                 >> turn_ready_middleware
@@ -52,6 +53,7 @@ def process_query(query):
         case QueryType.END_SPEECH:
             return (
                 Wrap(query)
+                >> active_game_middleware
                 >> in_game_middleware
                 >> alive_middleware
                 >> turn_ready_middleware
@@ -62,6 +64,7 @@ def process_query(query):
         case QueryType.NOMINATE:
             return (
                 Wrap(query)
+                >> active_game_middleware
                 >> in_game_middleware
                 >> alive_middleware
                 >> turn_ready_middleware
@@ -73,6 +76,7 @@ def process_query(query):
         case QueryType.VOTE:
             return (
                 Wrap(query)
+                >> active_game_middleware
                 >> in_game_middleware
                 >> alive_middleware
                 >> turn_ready_middleware
@@ -84,6 +88,7 @@ def process_query(query):
         case QueryType.BALANCE:
             return (
                 Wrap(query)
+                >> active_game_middleware
                 >> in_game_middleware
                 >> alive_middleware
                 >> turn_ready_middleware
@@ -110,6 +115,7 @@ def process_query(query):
             return (
                 Wrap(query)
                 >> admin_middleware
+                >> active_game_middleware
                 >> in_game_middleware
                 >> handle_terminate_game
             )
@@ -117,16 +123,18 @@ def process_query(query):
             return (
                 Wrap(query)
                 >> admin_middleware
-                >> in_game_middleware
+                >> active_game_middleware
                 >> right_phase_middleware
+                >> in_game_middleware
                 >> handle_start_night
             )
         case QueryType.SKIP_NIGHT:
             return (
                 Wrap(query)
                 >> admin_middleware
-                >> in_game_middleware
+                >> active_game_middleware
                 >> right_phase_middleware
+                >> in_game_middleware
                 >> handle_skip_night
             )
         case QueryType.MAFIA_CHAT:

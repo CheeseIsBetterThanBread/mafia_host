@@ -41,13 +41,14 @@ INTERNAL_TAG = "internal"
 KNOWN_TAGS = {
     INTERNAL_TAG: 0,
     "admin": 1,
-    "in_game": 2,
+    "active_game": 2,
     "no_game": 2,
     "ready_to_start": 2,
     "right_phase": 3,
-    "alive": 4,
-    "turn_ready": 5,
-    "valid_target": 6,
+    "in_game": 4,
+    "alive": 5,
+    "turn_ready": 6,
+    "valid_target": 7,
 }
 
 

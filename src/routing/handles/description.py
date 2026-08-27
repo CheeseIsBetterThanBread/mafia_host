@@ -1,7 +1,7 @@
 from src.models.meta import Meta, Result
 
 # Доступ защищен тегами:
-# in_game
+# active_game
 
 
 async def handle_description(meta_info: Meta) -> Result:
