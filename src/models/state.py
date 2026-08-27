@@ -8,6 +8,6 @@ class State(Enum):
     VOTE = "vote"
     BALANCE = "balance"
     REVOTE = "revote"
-    NIGHT_THIEF = "night_thief"
+    THIEF = "thief"
     NIGHT = "night"
     DONE = "done"

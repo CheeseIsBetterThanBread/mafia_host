@@ -75,13 +75,13 @@ def right_phase_middleware(meta_info: Meta) -> Result:
 
     if query.cmd == QueryType.START_NIGHT and game.state in [
         State.NIGHT,
-        State.NIGHT_THIEF,
+        State.THIEF,
     ]:
         return _make_invalid_response(query, "Ночь уже началась")
 
     if query.cmd == QueryType.SKIP_NIGHT and game.state not in [
         State.NIGHT,
-        State.NIGHT_THIEF,
+        State.THIEF,
     ]:
         return _make_invalid_response(query, "Сейчас не ночь")
 
