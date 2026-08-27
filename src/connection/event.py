@@ -86,7 +86,7 @@ class ResponseWithOptions(Response):
         return "ResponseWithOptions"
 
 
-class StartGameQuery(Query):
+class OpenGameQuery(Query):
     def __init__(self, cmd, admin_ids, chat_id, user_id, chat_type):
         super().__init__(cmd, admin_ids, chat_id, user_id)
         self.chat_type = chat_type
