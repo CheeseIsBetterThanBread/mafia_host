@@ -31,8 +31,7 @@ class CodeGenerator:
 
         self.force = force
 
-        self.common_guard_imports = "from src.models import Meta, Result\n\n"
-        self.common_handle_imports = "from src.models import Meta, Response\n\n"
+        self.common_imports = "from src.models import Meta, Result\n\n"
 
         self._load_yaml()
         self._scan_event_file()
@@ -261,7 +260,7 @@ class CodeGenerator:
             if handle in self.existing_handlers and not self.force:
                 continue
 
-            content = self.common_handle_imports
+            content = self.common_imports
 
             tags = cmd.get("tags", [])
             if not isinstance(tags, list):
@@ -275,7 +274,7 @@ class CodeGenerator:
 
                 content += "\n\n"
 
-            content += f"async def handle_{handle}(meta_info: Meta) -> Response:\n"
+            content += f"async def handle_{handle}(meta_info: Meta) -> Result:\n"
             content += "    # TODO: реализовать логику обработки\n"
             content += "    pass\n"
 
@@ -299,7 +298,7 @@ class CodeGenerator:
             if handle in self.existing_guards and not self.force:
                 continue
 
-            content = self.common_guard_imports
+            content = self.common_imports
             content += f"async def guard_{handle}(meta_info: Meta) -> Result:\n"
             content += "    # TODO: реализовать логику проверки доступа\n"
             content += "    pass\n"
@@ -308,7 +307,8 @@ class CodeGenerator:
             self.existing_guards.add(handle)
 
     def generate_router(self):
-        content = "from auth import *\n"
+        content = "from src.models import Pipe, Query\n\n"
+        content += "from auth import *\n"
         content += "from query import QueryType\n"
 
         additional_content = "\n"
@@ -332,10 +332,8 @@ class CodeGenerator:
             content += f"from handles.{handle} import handle_{handle}\n"
 
         content += "\n\n"
-        content += "def process_query(query):\n"
-        content += "    cmd = QueryType.from_string(query.get('cmd', ''))\n"
-
-        content += "    match cmd:\n"
+        content += "def process_query(query: Query) -> Pipe:\n"
+        content += "    match query.cmd:\n"
         for cmd in self.commands:
             handle = cmd["handle"]
             enum_name = self._to_enum_name(handle)

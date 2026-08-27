@@ -1,3 +1,5 @@
+from src.models import Pipe, Query
+
 from auth import *
 from query import QueryType
 
@@ -31,9 +33,8 @@ from handles.mafia_chat import handle_mafia_chat
 from handles.night_action import handle_night_action
 
 
-def process_query(query):
-    cmd = QueryType.from_string(query.get("cmd", ""))
-    match cmd:
+def process_query(query: Query) -> Pipe:
+    match query.cmd:
         case QueryType.HELP:
             return Wrap(query) >> handle_help
         case QueryType.ADMIN_HELP:

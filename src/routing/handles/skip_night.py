@@ -1,9 +1,9 @@
-from src.models import Meta, Response
+from src.models import Meta, Result
 
 # Доступ защищен тегами:
 # admin, active_game, in_game, right_phase
 
 
-async def handle_skip_night(meta_info: Meta) -> Response:
+async def handle_skip_night(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass

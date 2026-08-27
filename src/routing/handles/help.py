@@ -1,6 +1,6 @@
-from src.models import Meta, Response
+from src.models import Meta, Result
 
 
-async def handle_help(meta_info: Meta) -> Response:
+async def handle_help(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass
