@@ -43,7 +43,7 @@ class Response(Event):
     def __init__(self, chat_id, text, valid=False, parse_mode=None):
         self.chat_id = chat_id
         self.text = text
-        self.is_valid = valid
+        self.valid = valid
         self.parse_mode = parse_mode
 
     def get_log_string(self):
