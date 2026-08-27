@@ -31,7 +31,8 @@ class CodeGenerator:
 
         self.force = force
 
-        self.common_imports = "from src.models import Meta, Result\n\n"
+        self.common_guard_imports = "from src.models import Meta, Result\n\n"
+        self.common_handle_imports = "from src.models import Meta, Response\n\n"
 
         self._load_yaml()
         self._scan_event_file()
@@ -253,14 +254,14 @@ class CodeGenerator:
         query_path = self.output_dir / "query.py"
         query_path.write_text(content, encoding="utf-8")
 
-    def generate_handlers(self):
+    def generate_handles(self):
         for cmd in self.commands:
             handle = cmd["handle"]
 
             if handle in self.existing_handlers and not self.force:
                 continue
 
-            content = self.common_imports
+            content = self.common_handle_imports
 
             tags = cmd.get("tags", [])
             if not isinstance(tags, list):
@@ -274,7 +275,7 @@ class CodeGenerator:
 
                 content += "\n\n"
 
-            content += f"async def handle_{handle}(meta_info: Meta) -> Result:\n"
+            content += f"async def handle_{handle}(meta_info: Meta) -> Response:\n"
             content += "    # TODO: реализовать логику обработки\n"
             content += "    pass\n"
 
@@ -298,7 +299,7 @@ class CodeGenerator:
             if handle in self.existing_guards and not self.force:
                 continue
 
-            content = self.common_imports
+            content = self.common_guard_imports
             content += f"async def guard_{handle}(meta_info: Meta) -> Result:\n"
             content += "    # TODO: реализовать логику проверки доступа\n"
             content += "    pass\n"
@@ -365,7 +366,7 @@ class CodeGenerator:
     def generate_all(self):
         self.generate_help()
         self.generate_query()
-        self.generate_handlers()
+        self.generate_handles()
         self.generate_guards()
         self.generate_router()
 

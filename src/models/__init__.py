@@ -1,6 +1,6 @@
 from src.models.either import Either, Left, Right
 from src.models.game import Game
-from src.models.meta import Meta, Result, Query
+from src.models.meta import Meta, Result, Query, Response
 from src.models.pipe import Pipe
 from src.models.player import Player
 from src.models.serialization import get_room_id
@@ -16,6 +16,7 @@ __ALL__ = (
     Pipe,
     Player,
     Query,
+    Response,
     Result,
     Right,
     State,

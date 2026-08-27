@@ -1,9 +1,9 @@
-from src.models import Meta, Result
+from src.models import Meta, Response
 
 # Доступ защищен тегами:
 # active_game
 
 
-async def handle_roles(meta_info: Meta) -> Result:
+async def handle_roles(meta_info: Meta) -> Response:
     # TODO: реализовать логику обработки
     pass

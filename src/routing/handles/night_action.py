@@ -1,10 +1,10 @@
-from src.models import Meta, Result
+from src.models import Meta, Response
 
 # Доступ защищен тегами:
 # internal
 # Для этой команды требуется guard
 
 
-async def handle_night_action(meta_info: Meta) -> Result:
+async def handle_night_action(meta_info: Meta) -> Response:
     # TODO: реализовать логику обработки
     pass
