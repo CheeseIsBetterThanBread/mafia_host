@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.models.game import Game
+from src.models import Game
 
 
 class Storage:
@@ -13,8 +13,7 @@ class Storage:
 
     def create_game(self, chat_id):
         self.game_counter += 1
-        game = Game(chat_id, self.game_counter)
-        self.games[chat_id] = game
+        self.games[chat_id] = Game(chat_id, self.game_counter)
 
 
 STORAGE = Storage()

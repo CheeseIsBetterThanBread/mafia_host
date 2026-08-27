@@ -28,12 +28,12 @@ class Game:
         self.game_number = game_counter
         self.day_starter_num = 1
 
-        self.nominated = []
-        self.speech_queue = deque()
-        self.defense_queue = deque()
+        self.expected_day_actors = 0
+        self.order_queue = deque()
         self.timer_manager = TimerManager()
 
-        self.voting_queue = deque()
+        self.nominated = []
+
         self.current_votes = {}
         self.vote_history = {}
 
@@ -41,7 +41,6 @@ class Game:
         self.revote_count = 0
 
         self.night_actions = {}
-
         self.expected_night_actors = {}
 
         self.current_preset = []

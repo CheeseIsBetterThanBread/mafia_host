@@ -1,4 +1,4 @@
-from src.models.meta import Meta, Result
+from src.models import Meta, Result
 
 # Доступ защищен тегами:
 # admin, ready_to_start

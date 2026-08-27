@@ -5,10 +5,13 @@ import sqlite3
 
 from config.settings import DB_PATH
 
-from src.models.stats import Balance, WinRate
-from src.models.player import Player
-from src.models.game import Game
-from src.models.serialization import get_room_id
+from src.models import (
+    Balance,
+    Game,
+    Player,
+    WinRate,
+    get_room_id,
+)
 
 from src.role_info.teams import ROLE_TO_TEAM, Team
 

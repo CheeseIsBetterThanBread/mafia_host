@@ -14,8 +14,7 @@ from config.settings import (
 
 from src.role_info.presets import ROOM_PRESETS, SPECIAL_PRESETS
 
-from src.models.stats import Balance
-from src.models.game import Game
+from src.models import Balance, Game
 
 from src.services.database import DATABASE
 from src.services.confirmation import confirm

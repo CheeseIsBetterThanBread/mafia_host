@@ -31,7 +31,7 @@ class CodeGenerator:
 
         self.force = force
 
-        self.common_imports = "from src.models.meta import Meta, Result\n\n"
+        self.common_imports = "from src.models import Meta, Result\n\n"
 
         self._load_yaml()
         self._scan_event_file()

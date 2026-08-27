@@ -4,12 +4,17 @@ from src.connection.event import Response
 
 from src.routing.query import QueryType
 
-from src.models.meta import Meta, Query, Result
-from src.models.either import Left, Right
-from src.models.pipe import Pipe
-from src.models.game import Game
-from src.models.state import State
-from src.models.player import Player
+from src.models import (
+    Game,
+    Left,
+    Meta,
+    Pipe,
+    Player,
+    Query,
+    Result,
+    Right,
+    State,
+)
 
 from src.services.storage import STORAGE
 

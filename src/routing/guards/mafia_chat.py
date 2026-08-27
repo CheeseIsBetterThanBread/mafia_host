@@ -1,4 +1,4 @@
-from src.models.meta import Meta, Result
+from src.models import Meta, Result
 
 
 async def guard_mafia_chat(meta_info: Meta) -> Result:
