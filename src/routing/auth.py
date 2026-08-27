@@ -37,7 +37,7 @@ def active_game_middleware(meta_info: Meta) -> Result:
     query: Query = meta_info.query
 
     game: Optional[Game] = STORAGE.get_game(query.chat_id)
-    if not game or game.state in [State.LOBBY, State.FINISHED]:
+    if not game or game.state in [State.LOBBY, State.DONE]:
         return _make_invalid_response(query, "Игра ещё не началась")
 
     meta_info.game = game
@@ -48,7 +48,7 @@ def no_game_middleware(meta_info: Meta) -> Result:
     query: Query = meta_info.query
 
     game: Optional[Game] = STORAGE.get_game(query.chat_id)
-    if game and game.state != State.FINISHED:
+    if game and game.state != State.DONE:
         return _make_invalid_response(query, "В этом чате уже есть игра")
 
     return Right(meta_info)
