@@ -307,7 +307,7 @@ class CodeGenerator:
             self.existing_guards.add(handle)
 
     def generate_router(self):
-        content = "from src.models import Pipe, Query\n\n"
+        content = "from src.services.unreachable import Unreachable\n\n"
         content += "from auth import *\n"
         content += "from query import QueryType\n"
 
@@ -351,7 +351,7 @@ class CodeGenerator:
                 content += f"            return {handler_chain}\n"
 
         content += "        case _:\n"
-        content += "            raise ValueError('Неизвестная команда')\n"
+        content += "            return Unreachable()\n"
 
         router_path = self.output_dir / "router.py"
         router_path.write_text(content, encoding="utf-8")

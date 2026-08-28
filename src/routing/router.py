@@ -1,4 +1,4 @@
-from src.models import Pipe, Query
+from src.services.unreachable import Unreachable
 
 from auth import *
 from query import QueryType
@@ -146,4 +146,4 @@ def process_query(query: Query) -> Pipe:
         case QueryType.NIGHT_ACTION:
             return Wrap(query) >> guard_night_action >> handle_night_action
         case _:
-            raise ValueError("Неизвестная команда")
+            return Unreachable()
