@@ -19,6 +19,7 @@ from src.models import Balance, Game
 from src.services.database import DATABASE
 from src.services.confirmation import confirm
 from src.services.logger import LOGGER
+from src.services.unreachable import Unreachable
 
 
 class Distributor:
@@ -42,12 +43,15 @@ class Distributor:
         roles_str = ", ".join(game.current_preset)
         LOGGER.verbose_debug(f"Game is running with roles {roles_str}")
 
-        if not balance_allowed:
-            assert plain_allowed
+        if balance_allowed:
+            cls._assign_roles_balance(game)
+            return
+
+        if plain_allowed:
             cls._assign_roles_plain(game)
             return
 
-        cls._assign_roles_balance(game)
+        Unreachable()
 
     @classmethod
     def _assign_roles_plain(cls, game: Game):
