@@ -111,16 +111,16 @@ BACKUP_FILES = 3
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
 
 # --- callback contract ---
-NOMINATE_CALLBACK_TEMPLATE = "nom|{chat_id}|{player_number}"
+NOMINATE_CALLBACK_TEMPLATE = "nominate|{chat_id}|{player_number}"
 NOMINATE_TYPES = {"chat_id": int, "player_number": int}
 
-VOTE_CALLBACK_TEMPLATE = "v|{chat_id}|{player_number}"
+VOTE_CALLBACK_TEMPLATE = "vote|{chat_id}|{player_number}"
 VOTE_TYPES = {"chat_id": int, "player_number": int}
 
-BALANCE_CALLBACK_TEMPLATE = "bal|{chat_id}|{number}"
+BALANCE_CALLBACK_TEMPLATE = "balance|{chat_id}|{number}"
 BALANCE_TYPES = {"chat_id": int, "number": int}
 
-NIGHT_CALLBACK_TEMPLATE = "n|{chat_id}|{action}|{target}"
+NIGHT_CALLBACK_TEMPLATE = "night|{chat_id}|{action}|{target}"
 NIGHT_TYPES = {"chat_id": int, "target": int}
 
 NULL_OPTION = 0
