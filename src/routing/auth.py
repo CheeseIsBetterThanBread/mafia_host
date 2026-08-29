@@ -16,6 +16,8 @@ from src.models import (
     State,
 )
 
+from src.role_info.presets import ROOM_PRESETS
+
 from src.services.storage import STORAGE
 
 
@@ -63,8 +65,11 @@ def ready_to_start_middleware(meta_info: Meta) -> Result:
     query: Query = meta_info.query
 
     game: Optional[Game] = STORAGE.get_game(query.chat_id)
-    if game and game.state != State.LOBBY:
+    if not game or game.state != State.LOBBY:
         return _make_invalid_response(query, "Игра не готова к запуску")
+
+    if len(game.players) < min(ROOM_PRESETS.keys()):
+        return _make_invalid_response(query, "Недостаточное количество участников")
 
     meta_info.game = game
     return Right(meta_info)
