@@ -41,8 +41,12 @@ class Engine:
         game.timer_manager.add_timer("simulate_thief", 0.0, Engine._simulate_thief)
         game.timer_manager.add_timer("simulate_night", 0.0, Engine._simulate_night)
         game.timer_manager.add_timer("thief_timeout", THIEF_TIME, Engine._thief_timeout)
-        game.timer_manager.add_timer("night_reminder", NIGHT_TIME - REMINDER_OFFSET, Engine._night_reminder)
-        game.timer_manager.add_timer("night_timeout", REMINDER_OFFSET, Engine._night_timeout)
+        game.timer_manager.add_timer(
+            "night_reminder", NIGHT_TIME - REMINDER_OFFSET, Engine._night_reminder
+        )
+        game.timer_manager.add_timer(
+            "night_timeout", REMINDER_OFFSET, Engine._night_timeout
+        )
 
     @staticmethod
     def _make_valid_response(game: Game, msg: str):
@@ -126,7 +130,9 @@ class Engine:
                     NightAction.SHURIKEN
                 ] = target.number
 
-                LOGGER.verbose_debug(f"Ninja skipped night move: send to {target.user_id}")
+                LOGGER.verbose_debug(
+                    f"Ninja skipped night move: send to {target.user_id}"
+                )
 
                 response = Response(
                     player.user_id,
@@ -139,7 +145,9 @@ class Engine:
             if player.role == "Тула":
                 LOGGER.verbose_debug("Tula skipped night move")
 
-                valid_targets = [t for t in alive_players if t.number != player.last_healed]
+                valid_targets = [
+                    t for t in alive_players if t.number != player.last_healed
+                ]
                 if valid_targets:
                     target = random.choice(valid_targets)
                     game.night_actions.setdefault(player.user_id, {})[
@@ -166,7 +174,9 @@ class Engine:
                     NightAction.MANIAC_KILL
                 ] = target.number
 
-                LOGGER.verbose_debug(f"Maniac skipped night move: send to {target.user_id}")
+                LOGGER.verbose_debug(
+                    f"Maniac skipped night move: send to {target.user_id}"
+                )
 
                 response = Response(
                     player.user_id,
@@ -382,9 +392,7 @@ class Engine:
             if Engine._check_for_victory(meta_info):
                 return
 
-        response: Response = Engine._make_valid_response(
-            game, "Город засыпает..."
-        )
+        response: Response = Engine._make_valid_response(game, "Город засыпает...")
         meta_info.add_response(response)
 
         Engine.start_thief(meta_info)
@@ -419,7 +427,8 @@ class Engine:
 
         if votes["acquit"] == critical_vote:
             response: Response = Engine._make_valid_response(
-                game, "Все оправданы\nГород засыпает...",
+                game,
+                "Все оправданы\nГород засыпает...",
             )
             meta_info.add_response(response)
             Engine.start_thief(meta_info)
@@ -496,7 +505,9 @@ class Engine:
 
         if not thief:
             game.timer_manager.update_timer("simulate_thief", meta_info)
-            game.timer_manager.restart_timer("simulate_thief", random.randint(THIEF_LOWER, THIEF_UPPER))
+            game.timer_manager.restart_timer(
+                "simulate_thief", random.randint(THIEF_LOWER, THIEF_UPPER)
+            )
             return
 
         thief_action_info = ROLE_NIGHT_ACTIONS["Вор"][0]
@@ -506,7 +517,8 @@ class Engine:
             chat_id=game.chat_id, action=thief_action_info[0], target=number
         )
         thief_options = [
-            (f"№{t.number} ({t.name})", generate_callback(t.number)) for t in alive_players
+            (f"№{t.number} ({t.name})", generate_callback(t.number))
+            for t in alive_players
         ]
         thief_options.append(("Никого не клеить", generate_callback(NULL_OPTION)))
 
@@ -569,19 +581,28 @@ class Engine:
                             continue
                     case other:
                         action_options = [
-                            (f"№{t.number} ({t.name})", generate_callback(other, t.number))
+                            (
+                                f"№{t.number} ({t.name})",
+                                generate_callback(other, t.number),
+                            )
                             for t in alive_players
                         ]
 
                 response = ResponseWithOptions(
-                    p.user_id, text, action_options, valid=True, cmd=QueryType.NIGHT_ACTION
+                    p.user_id,
+                    text,
+                    action_options,
+                    valid=True,
+                    cmd=QueryType.NIGHT_ACTION,
                 )
                 meta_info.add_response(response)
 
         if not game.expected_night_actors:
             if game.simulation:
                 game.timer_manager.update_timer("simulate_night", meta_info)
-                game.timer_manager.restart_timer("simulate_night", random.randint(NIGHT_LOWER, NIGHT_UPPER))
+                game.timer_manager.restart_timer(
+                    "simulate_night", random.randint(NIGHT_LOWER, NIGHT_UPPER)
+                )
                 return
 
             Engine.finish_night(meta_info)
@@ -598,12 +619,9 @@ class Engine:
         alive = game.filter_players(lambda p: p.is_alive)
 
         shurikens_before = {p.number for p in alive if p.shurikens > 0}
-        mafia_dead = not any(
-            p.is_alive for p in alive if p.role in game.mafia_team
-        )
+        mafia_dead = not any(p.is_alive for p in alive if p.role in game.mafia_team)
         mafia_blocked = (
-                any(p.is_glued for p in alive if p.role in game.mafia_team)
-                or mafia_dead
+            any(p.is_glued for p in alive if p.role in game.mafia_team) or mafia_dead
         )
 
         actions = []
@@ -656,7 +674,7 @@ class Engine:
                 if a["code"] == NightAction.VOTE and not a["actor"].is_glued:
                     weight = 2 if a["actor"].role == "Дон" else 1
                     mafia_votes[a["target"].number] = (
-                            mafia_votes.get(a["target"].number, 0) + weight
+                        mafia_votes.get(a["target"].number, 0) + weight
                     )
             if mafia_votes:
                 max_v = max(mafia_votes.values())
@@ -676,7 +694,10 @@ class Engine:
                 solo_victims.append(a["target"])
 
         if mafia_victim:
-            if not is_healed(mafia_victim.number) and mafia_victim.role != "Бессмертный":
+            if (
+                not is_healed(mafia_victim.number)
+                and mafia_victim.role != "Бессмертный"
+            ):
                 killed_this_night.add(mafia_victim.number)
 
         for victim in solo_victims:
@@ -694,7 +715,10 @@ class Engine:
             if p.role == "Тула" and p.number in killed_this_night:
                 if not putana_client or putana_client.number == p.number:
                     continue
-                if putana_client.role == "Бессмертный" or putana_client.number in healed:
+                if (
+                    putana_client.role == "Бессмертный"
+                    or putana_client.number in healed
+                ):
                     continue
                 killed_this_night.add(putana_client.number)
 
@@ -712,7 +736,7 @@ class Engine:
             num
             for num in shurikens_before
             if game.players_by_number[num].is_alive
-               and game.players_by_number[num].shurikens == 0
+            and game.players_by_number[num].shurikens == 0
         ]
         if lost_shurikens:
             announcement += f"Сюрикены были успешно извлечены (сброшены) у игроков: {', '.join(map(str, lost_shurikens))}\n"
@@ -749,9 +773,7 @@ class Engine:
         if game.state != State.THIEF or game.day_count != current_day:
             return
 
-        response: Response = Engine._make_valid_response(
-            game, "Вор никого не заклеил"
-        )
+        response: Response = Engine._make_valid_response(game, "Вор никого не заклеил")
         meta_info.add_response(response)
 
         game.expected_night_actors.clear()
