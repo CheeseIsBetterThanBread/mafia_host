@@ -4,6 +4,6 @@ from src.models import Meta, Result
 # admin, ready_to_start
 
 
-async def handle_run_game(meta_info: Meta) -> Result:
+def handle_run_game(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass

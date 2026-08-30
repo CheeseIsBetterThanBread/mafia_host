@@ -4,6 +4,6 @@ from src.models import Meta, Result
 # admin, active_game, in_game, right_phase
 
 
-async def handle_start_night(meta_info: Meta) -> Result:
+def handle_start_night(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass

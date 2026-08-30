@@ -5,6 +5,6 @@ from src.models import Meta, Result
 # Для этой команды требуется guard
 
 
-async def handle_commit_vote(meta_info: Meta) -> Result:
+def handle_commit_vote(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass

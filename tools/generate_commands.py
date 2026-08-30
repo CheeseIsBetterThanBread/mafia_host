@@ -274,7 +274,7 @@ class CodeGenerator:
 
                 content += "\n\n"
 
-            content += f"async def handle_{handle}(meta_info: Meta) -> Result:\n"
+            content += f"def handle_{handle}(meta_info: Meta) -> Result:\n"
             content += "    # TODO: реализовать логику обработки\n"
             content += "    pass\n"
 
@@ -299,7 +299,7 @@ class CodeGenerator:
                 continue
 
             content = self.common_imports
-            content += f"async def guard_{handle}(meta_info: Meta) -> Result:\n"
+            content += f"def guard_{handle}(meta_info: Meta) -> Result:\n"
             content += "    # TODO: реализовать логику проверки доступа\n"
             content += "    pass\n"
 
@@ -332,7 +332,7 @@ class CodeGenerator:
             content += f"from handles.{handle} import handle_{handle}\n"
 
         content += "\n\n"
-        content += "def process_query(query: Query) -> Pipe:\n"
+        content += "def process_query(query: Query) -> Result:\n"
         content += "    match query.cmd:\n"
         for cmd in self.commands:
             handle = cmd["handle"]

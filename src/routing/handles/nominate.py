@@ -4,6 +4,6 @@ from src.models import Meta, Result
 # active_game, in_game, alive, turn_ready, valid_target
 
 
-async def handle_nominate(meta_info: Meta) -> Result:
+def handle_nominate(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass

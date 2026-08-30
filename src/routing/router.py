@@ -33,7 +33,7 @@ from handles.mafia_chat import handle_mafia_chat
 from handles.night_action import handle_night_action
 
 
-def process_query(query: Query) -> Pipe:
+def process_query(query: Query) -> Result:
     match query.cmd:
         case QueryType.HELP:
             return Wrap(query) >> handle_help

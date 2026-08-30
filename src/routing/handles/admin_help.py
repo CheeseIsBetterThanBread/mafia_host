@@ -4,6 +4,6 @@ from src.models import Meta, Result
 # admin
 
 
-async def handle_admin_help(meta_info: Meta) -> Result:
+def handle_admin_help(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass

@@ -26,10 +26,9 @@ def _make_invalid_response(query: Query, msg: str) -> Result:
     return Left(response)
 
 
-def Wrap(query: Query) -> Pipe:
+def Wrap(query: Query) -> Result:
     meta_info: Meta = Meta(query)
-    result: Result = Right(meta_info)
-    return Pipe(result)
+    return Right(meta_info)
 
 
 def admin_middleware(meta_info: Meta) -> Result:

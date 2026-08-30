@@ -4,6 +4,6 @@ from src.models import Meta, Result
 # active_game
 
 
-async def handle_status(meta_info: Meta) -> Result:
+def handle_status(meta_info: Meta) -> Result:
     # TODO: реализовать логику обработки
     pass
