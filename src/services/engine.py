@@ -1,4 +1,3 @@
-from asyncio import sleep
 import random
 
 from config.settings import (
@@ -10,7 +9,6 @@ from config.settings import (
     NIGHT_UPPER,
     NIGHT_CALLBACK_TEMPLATE,
     NULL_OPTION,
-    REMINDER_OFFSET,
 )
 
 from src.connection.event import ResponseWithOptions
@@ -35,19 +33,6 @@ from src.services.unreachable import Unreachable
 
 
 class Engine:
-    @staticmethod
-    def setup_timers(meta_info: Meta):
-        game: Game = meta_info.game
-        game.timer_manager.add_timer("simulate_thief", 0.0, Engine._simulate_thief)
-        game.timer_manager.add_timer("simulate_night", 0.0, Engine._simulate_night)
-        game.timer_manager.add_timer("thief_timeout", THIEF_TIME, Engine._thief_timeout)
-        game.timer_manager.add_timer(
-            "night_reminder", NIGHT_TIME - REMINDER_OFFSET, Engine._night_reminder
-        )
-        game.timer_manager.add_timer(
-            "night_timeout", REMINDER_OFFSET, Engine._night_timeout
-        )
-
     @staticmethod
     def _make_valid_response(game: Game, msg: str):
         return Response(game.chat_id, msg, valid=True)
@@ -752,69 +737,3 @@ class Engine:
             return
 
         Engine.start_day(meta_info)
-
-    @staticmethod
-    async def _simulate_thief(meta_info: Meta):
-        response: Response = Engine._make_valid_response(
-            meta_info.game,
-            "Вор никого не заклеил",
-        )
-        meta_info.add_response(response)
-        Engine.start_night(meta_info)
-
-    @staticmethod
-    async def _simulate_night(meta_info: Meta):
-        await sleep(random.randint(NIGHT_LOWER, NIGHT_UPPER))
-        Engine.finish_night(meta_info)
-
-    @staticmethod
-    async def _thief_timeout(meta_info: Meta, current_day: int):
-        game: Game = meta_info.game
-        if game.state != State.THIEF or game.day_count != current_day:
-            return
-
-        response: Response = Engine._make_valid_response(game, "Вор никого не заклеил")
-        meta_info.add_response(response)
-
-        game.expected_night_actors.clear()
-        alive: list[Player] = game.filter_players(lambda p: p.is_alive)
-        thief = next((p for p in alive if p.role == "Вор"), None)
-        if thief:
-            thief.last_rek = None
-
-        Engine.start_night(meta_info)
-
-    @staticmethod
-    async def _night_reminder(meta_info: Meta, current_day: int):
-        game: Game = meta_info.game
-        if game.state != State.NIGHT or game.day_count != current_day:
-            return
-
-        for uid in game.expected_night_actors.keys():
-            response = Response(
-                uid,
-                f"<b>Осталось {REMINDER_OFFSET} секунд!</b> Поторопитесь сделать свой выбор, иначе ваш ход сгорит.",
-                parse_mode="HTML",
-                valid=True,
-            )
-            meta_info.add_response(response)
-
-        game.timer_manager.update_timer("night_timeout", meta_info, current_day)
-        game.timer_manager.restart_timer("night_timeout")
-
-    @staticmethod
-    async def _night_timeout(meta_info: Meta, current_day: int):
-        game: Game = meta_info.game
-        if game.state != State.NIGHT or game.day_count != current_day:
-            return
-
-        response = Response(
-            game.chat_id,
-            "<b>Время вышло!</b> Ночь затянулась.",
-            parse_mode="HTML",
-            valid=True,
-        )
-        meta_info.add_response(response)
-        game.expected_night_actors.clear()
-
-        Engine.finish_night(meta_info)
