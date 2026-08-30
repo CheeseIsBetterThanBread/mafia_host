@@ -810,7 +810,7 @@ class Engine:
 
         response = Response(
             game.chat_id,
-            "⏰ <b>Время вышло!</b> Ночь затянулась.",
+            "<b>Время вышло!</b> Ночь затянулась.",
             parse_mode="HTML",
             valid=True,
         )
