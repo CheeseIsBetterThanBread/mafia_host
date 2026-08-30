@@ -69,12 +69,11 @@ class TimerManager:
             config.interval = interval
         self.start_timer(name)
 
-    def update_timer(self, name: str, **kwargs):
+    def update_timer(self, name: str, *args, **kwargs):
         config = self._timers.get(name)
         if config:
-            for key, value in kwargs.items():
-                if hasattr(config, key):
-                    setattr(config, key, value)
+            config.args = args
+            config.kwargs = kwargs
 
     def is_running(self, name: str) -> bool:
         config = self._timers.get(name)
