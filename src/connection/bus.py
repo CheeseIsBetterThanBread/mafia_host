@@ -53,3 +53,10 @@ class EventBus:
             handler_chain = wrapper
 
         await handler_chain(event)
+
+
+BUS = prepare_bus()
+
+
+async def send_async_response(response):
+    await BUS.emit(response)
