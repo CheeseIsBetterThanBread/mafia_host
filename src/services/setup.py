@@ -4,7 +4,10 @@ from config.settings import (
     REMINDER_OFFSET,
     THIEF_TIME,
     NIGHT_TIME,
+    WARNING_OFFSET,
 )
+
+from src.connection.bus import send_async_response
 
 from src.models import (
     Game,
@@ -24,7 +27,7 @@ async def _simulate_thief(meta_info: Meta):
         meta_info.game,
         "Вор никого не заклеил",
     )
-    meta_info.add_response(response)
+    await send_async_response(response)
     Engine.start_night(meta_info)
 
 
@@ -38,7 +41,7 @@ async def _thief_timeout(meta_info: Meta, current_day: int):
         return
 
     response: Response = _make_valid_response(game, "Вор никого не заклеил")
-    meta_info.add_response(response)
+    await send_async_response(response)
 
     game.expected_night_actors.clear()
     alive: list[Player] = game.filter_players(lambda p: p.is_alive)
@@ -61,7 +64,7 @@ async def _night_reminder(meta_info: Meta, current_day: int):
             parse_mode="HTML",
             valid=True,
         )
-        meta_info.add_response(response)
+        await send_async_response(response)
 
     game.timer_manager.update_timer("night_timeout", meta_info, current_day)
     game.timer_manager.restart_timer("night_timeout")
@@ -78,10 +81,39 @@ async def _night_timeout(meta_info: Meta, current_day: int):
         parse_mode="HTML",
         valid=True,
     )
-    meta_info.add_response(response)
+    await send_async_response(response)
     game.expected_night_actors.clear()
 
     Engine.finish_night(meta_info)
+
+
+async def _speech_reminder(meta_info: Meta, player: Player):
+    game: Game = meta_info.game
+    if not (player.is_alive and game.state in [State.DAY, State.DEFENSE]):
+        return
+
+    response: Response = _make_valid_response(
+        game,
+        f"Игрок #{player.number}, осталось {WARNING_OFFSET} секунд!",
+    )
+    await send_async_response(response)
+
+    game.timer_manager.update_timer("speech_timeout", meta_info, player)
+    game.timer_manager.restart_timer("speech_timeout")
+
+
+async def _speech_timeout(meta_info: Meta, player: Player):
+    game: Game = meta_info.game
+    if not (player.is_alive and game.state in [State.DAY, State.DEFENSE]):
+        return
+
+    response: Response = _make_valid_response(
+        game,
+        f"Игрок #{player.number}, время вышло!",
+    )
+    await send_async_response(response)
+
+    Engine.next_speaker(meta_info)
 
 
 def setup_timers(game: Game):
@@ -91,6 +123,6 @@ def setup_timers(game: Game):
     game.timer_manager.add_timer(
         "night_reminder", NIGHT_TIME - REMINDER_OFFSET, _night_reminder
     )
-    game.timer_manager.add_timer(
-        "night_timeout", REMINDER_OFFSET, _night_timeout
-    )
+    game.timer_manager.add_timer("night_timeout", REMINDER_OFFSET, _night_timeout)
+    game.timer_manager.add_timer("speech_reminder", 0.0, _speech_reminder)
+    game.timer_manager.add_timer("speech_timeout", WARNING_OFFSET, _speech_timeout)
