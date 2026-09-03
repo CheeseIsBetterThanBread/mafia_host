@@ -71,6 +71,7 @@ def ready_to_start_middleware(meta_info: Meta) -> Result:
     if len(game.players) < min(ROOM_PRESETS.keys()):
         return _make_invalid_response(query, "Недостаточное количество участников")
 
+    setup_timers(game)
     meta_info.game = game
     return Right(meta_info)
 
