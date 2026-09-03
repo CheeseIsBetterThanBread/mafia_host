@@ -1,4 +1,4 @@
-from src.connection.bus import EventBus
+from src.connection.bus import EventBus, BUS
 from src.connection.event import Query
 
 from src.routing.router import process_query
@@ -7,8 +7,8 @@ from src.models.meta import Result, Response
 
 
 class Core:
-    def __init__(self, bus: EventBus):
-        self.bus = bus
+    def __init__(self):
+        self.bus: EventBus = BUS
 
     def register(self):
         @self.bus.on
