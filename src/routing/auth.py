@@ -8,7 +8,6 @@ from src.models import (
     Game,
     Left,
     Meta,
-    Pipe,
     Player,
     Query,
     Result,
@@ -19,6 +18,7 @@ from src.models import (
 from src.role_info.presets import ROOM_PRESETS
 
 from src.services.storage import STORAGE
+from src.services.setup import setup_timers
 
 
 def _make_invalid_response(query: Query, msg: str) -> Result:
@@ -46,6 +46,7 @@ def active_game_middleware(meta_info: Meta) -> Result:
     if not game or game.state in [State.LOBBY, State.DONE]:
         return _make_invalid_response(query, "Игра ещё не началась")
 
+    setup_timers(game)
     meta_info.game = game
     return Right(meta_info)
 
